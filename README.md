@@ -7,6 +7,6 @@ This course was conducted in SS2025.
 
 ## General Guidelines
 
-- Naming convention of files: <Matrikelnummer>_ue<xx>_a<Aufgabennummer>.<Dateiende>
-
+- Naming convention of files: **Matrikelnummer**_ue**XX**_a**Aufgabennummer**.**Dateiende**
+- Assembly files should be saved as **.s** files
 ---
