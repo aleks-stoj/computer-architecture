@@ -11,8 +11,8 @@ This course was conducted in SS2025.
   - Add matriculation number of teammembers inside the files (or as comment in the case of assembly)
 - Assembly files should be saved as **.s** files
 ---
-## Matriculation numbers
-- K12411325
-- K12411307
-- K12410383
+## Collaborators
+- Aleksandar Stojanović, K12411325
+- Annika Schmidtthaler, K12411307
+- Benedikt Zöchmann, K12410383
 ---
