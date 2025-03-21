@@ -1,0 +1,25 @@
+Aleksandar Stojanović, 12411325
+Annika Schmidthaler, 12411307
+Benedikt Zöchmann, 12410383
+
+
+Im Programm wird a0 auf die erste Speicheradresse (10000000) gesetzt, a1 auf 8, und a2 auf die Speicheradresse 1000008
+
+Anschließend springt das Programm mit jal 3 Befehle weiter und setzt t0 auf 0.
+
+Nun wird in einer loop immer überprüft ob t0 größer gleich a1 ist. Wenn nicht, dann wird das Byte an der Speicheradresse a0 in t2 geladen, das Register anschließend invertiert in t1 gespeichert und die untersten 2 Byte wieder zurück in den Speicher an der Adresse a2 gespeichert.
+
+Nun wird t0 um 1 erhöht, a0 um 1 erhöht und a2 um 2 erhöht.
+Das ganze wird 8 mal wiederholt, denn ab dann ist die branch-Bedingung erfüllt (t0>=a1) und das Programm springt 8 Befehle weiter und kehrt dann durch den jalr Befehl an die Rücksprungadresse vom ersten jal zurück, a0 wird auf 10 gesetzt und das Programm endet.
+
+
+Im Endeffekt wird also jedes Byte von Adresse 10000000 bis 10000007 invertiert und als zwei Byte (also jedes zweite Byte ist dann einfach FF) beginnend mit der Adresse 10000008 nacheinander wieder in den Speicher gespeichert.
+
+Am Ende sieht der Speicher folgendermaßen aus:
+
+0x10000014	9b	ff	d3	ff
+0x10000010	e0	ff	b9	ff
+0x1000000c	d9	ff	f6	ff
+0x10000008	ea	ff	ba	ff
+0x10000004	1f	46	64	2c
+0x10000000	15	45	26	09
