@@ -1,0 +1,32 @@
+Aufgabe 2
+a.)
+    .data
+
+    .globl main
+
+    .text
+
+    main: 
+
+        addi a0, zero, 1			# a0 = y
+        addi a1, zero, 1 			# a1 = n
+    
+    loop:
+    	addi a1, a1, 1 				# n += 1
+        
+        mulhu s0, a0, a1            # Oberen 32 Bit der Multiplikation
+        
+        bne s0, zero, reduce_n      # Falls nicht 0, jump to reduce_n
+        
+        mul a0, a0, a1              # Den aktuellen Wert mit n multipliziert
+        
+        jal loop
+    
+    reduce_n:
+    	addi a1, a1, -1
+        
+    loop_end:  
+
+b.)
+    Weil die Werte bei der Berechnung der Fakultät sehr schnell, sehr groß werden können. Wenn das passiert, muss geprüft werden, 
+    ob die oberen 32 Bit = 0 sind und somit kein Overflow stattgefunden hat. MAX_VAL würde einfach bei dem Maximum von 32 Bit limitiert sein.

@@ -1,0 +1,12 @@
+long:
+- Gleiche Bitbreite wie integer register (entweder 32-bit oder 64-bit, abhängig ob man RV32 oder RV64 verwendet)
+- In RV64 werden 32-bit Werte in integer Registern gespeichert mit richtiger sign extension (gilt auch für unsigned)
+- Verwendet register a0-a7 für Argumente und Rückgabewerte (ein long wert braucht jeweils nur 1 solches register, da es genauso groß ist wie das Register selbst)
+- Argumente kleiner als ein Pointer Word werden im LSB des Registers gespeichert
+
+long long:
+- 64-bit breiter integer (in RV32 & RV64)
+- Verwendet register a0-a7 für Argumente und Rückgabewerte (ein long long Wert in RV32 braucht 2 solcher Register um 1 Wert zu speichern, da ein long long immer 64-bit breit ist und somit das "Speicherlimit" von 32-bit überschreitet)
+- Argumente kleiner als ein Pointer Word werden im LSB des Registers gespeichert
+- Primitive Datentypen, die größer sind als ein Integer Register, haben ein even-odd alignment, d.h. das geradzahlige Register enthält die LSBs, während das ungerade Register die MSBs beinhaltet
+- Rückgabewerte, die zu groß sind, werden ganz im Speicher übergeben. Dafür wird ein Speicherbereich vom caller alloziert und der callee bekommt einen Pointer auf diesen Speicherbereich zurück

@@ -1,0 +1,21 @@
+Der Hexwert ist 0xABCD8765
+
+Bei Big-Endian werden die Bytes zu folgenden Byteadressen gespeichert: (höchste Wertigkeit zuerst)
+0 -> AB
+1 -> CD
+2 -> 87
+3 -> 65
+
+Big Little-Endian wird die niedrigste Wertigkeit zuerst gespeichert also:
+0 -> 65
+1 -> 87
+2 -> CD
+3 -> AB
+
+ 
+Durch das Auslesen des Wertes an der Byteadresse 1 können wir herausfinden, was verwendet wird.
+Wenn s2 am Ende 0xFFFFFF87 ist, dann Little-Endian
+Wenn s2 am Ende 0xFFFFFFCD ist, dann Big-Endian
+
+
+Der Test in Venus zeigt, dass Little-Endian verwendet wird.
