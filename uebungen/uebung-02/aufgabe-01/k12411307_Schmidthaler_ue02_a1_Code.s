@@ -34,7 +34,8 @@ addi a1, zero, 8	# a1 = 8
 auipc a2, 65536		# a2 = 0x1000000C
 addi a2, a2, -72	# a2 = 0x10000008 	auch hier, eigentlich ist es -4, aber ich muss wieder zusätzlich -68 rechnen
 jal ra, jump 		# PC + 12
-addi a0, zero, 10	# a0 = 10
+
+addi a0, zero, 10	# ecall exit
 ecall
 
 jump:
