@@ -1,0 +1,64 @@
+Aleksandar Stojanović, 12411325
+Annika Schmidthaler, 12411307
+Benedikt Zöchmann, 12410383
+
+Aufgabe 2
+.globl main
+
+.data
+    str:      .asciiz  "Das is ist ein String."   
+    substr1:  .asciiz  "ist"                   
+    substr2:  .asciiz  "blub"                   
+
+.text
+
+main:
+    la a0, str          				# a0 = str
+    la a1, substr1     					# a1 = substr1
+    jal my_strstr 
+
+    add a0, zero, s0					# Ergebnis der Funktion in a0
+    add s0, zero, zero					# so = 0
+
+    la a1, substr1     					# a1 = substr2
+    jal my_strstr 
+
+    add a1, zero, s0					# Ergebnis der Funktion in a1
+    add s0, zero, zero					# so = 0
+
+    jal zero, finish					# Springe zum Ende
+
+my_strstr:
+    addi t0, zero, 0 					# t0 = pos
+
+    for:
+        lb t1, 0(a0)      				# t1 = Lade str[i] in t2
+        beq t1, zero, not_found			# Wenn = '\0', gehe zu not_found
+
+        for2:
+            lb t2, 0(a1)      			# t2 = substr[j] in t4
+            beq t2, zero, found 		# t2 = '\0', Substring gefunden
+
+            lb t3, 0(a0)      			# t3 = str[i + j]
+            bne t2, t3, break 			# t3 != substr[j] -> i++
+
+            addi a1, a1, 1      		# j++
+            addi a0, a0, 1      		# i++
+
+    	jal zero, for2 					# Jump for2
+
+break:
+    addi a0, a0, 1      				# Lade str[i + 1]
+    addi t0, t0, 1      		    	# counter++
+    jal zero, for                     	# Wiederhole die äußere Schleife
+
+found:
+    add s0, t0, zero              		# s0 = i
+    jalr zero, ra, 0                    # Jump Main
+
+not_found:
+    addi s0, zero, -1          			# s0 = -1, wenn nicht gefunden
+    jalr zero, ra, 0                    # Jump Main
+
+finish: 
+    ecall
