@@ -6,9 +6,9 @@
 .globl main
 
 .data
-    str:      .asciiz  "Das is ist ein String."   
-    substr1:  .asciiz  "ist"                   
-    substr2:  .asciiz  "blub"                   
+    str:      .string  "Das is ist ein String."   
+    substr1:  .string  "ist"                   
+    substr2:  .string  "blub"                   
 
 .text
 
