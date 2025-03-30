@@ -27,7 +27,7 @@ end ALU;
 architecture Behavioral of ALU is
 
     -- Signaldeklarationen für die verschiedenen Operationen
-    signal A_or_B, A_and_B, A_or_NotB, A_and_NotB, sum_int, diff_int : std_logic_vector(31 downto 0);
+    signal A_or_B, A_and_B, A_or_NotB, A_and_NotB, sum_sub_int, B_not_B : std_logic_vector(31 downto 0);
     signal cout : std_logic;
     signal slt_result : std_logic_vector(31 downto 0) := (others => '0');
 
@@ -46,32 +46,25 @@ begin
     A_and_B <= A and B;    
 
     A_or_NotB <= A or Not B;      
-    A_and_NotB <= A and Not B;    
+    A_and_NotB <= A and Not B;   
+
+    -- Invertieren von B für Subtraktion
+    B_not_B <= (not B and (mode(2) and mode(1) and not mode(0))) or                   -- Not B (mode = "110")
+               (B and (not mode(2) and mode(1) and not mode(0)));                     -- B (mode = "010")
   
-    -- Instanz des CRA-Addierers für Addition
+    -- Instanz des CRA-Addierers für Addition und Subtraktion
     adder: cra_gen 
         generic map(width => 32)
         port map(
             a => A,
-            b => B, 
-            cin => '0',
+            b => B_not_B, 
+            cin => mode(2),
             cout => cout,
-            sum => sum_int
-        );
-
-    -- Subtraktion mit Addierer
-    subtraction: cra_gen 
-        generic map(width => 32)
-        port map(
-            a => A,
-            b => (not B),
-            cin => '1',
-            cout => cout,
-            sum => diff_int
+            sum => sum_sub_int
         );
 
     -- Set Less Than (SLT) - Ergebnis ist 1, wenn A < B
-    slt_result(0) <= diff_int(width - 1);
+    slt_result(0) <= sum_sub_int(width - 1);
     
     result <= (A_or_B and (not mode(2) and not mode(1) and not mode(0))) or           -- A OR B (mode = "000")
               (A_and_B and (not mode(2) and not mode(1) and mode(0))) or              -- A AND B (mode = "001")
@@ -79,9 +72,9 @@ begin
               (A_or_NotB and (mode(2) and not mode(1) and not mode(0))) or            -- A - Not B (mode = "100")
               (A_and_NotB and (mode(2) and not mode(1) and mode(0))) or               -- A - Not B (mode = "101")
               
-              (sum_int and (not mode(2) and mode(1) and not mode(0))) or              -- A + B (mode = "010")
+              (sum_sub_int and (not mode(2) and mode(1) and not mode(0))) or          -- A + B (mode = "010")
 
-              (diff_int and (mode(2) and mode(1) and not mode(0))) or                 -- A - B (mode = "110")
+              (sum_sub_int and (mode(2) and mode(1) and not mode(0))) or              -- A - B (mode = "110")
               
               (slt_result and (mode(2) and mode(1) and mode(0)));                     -- A < B (mode = "111")
 
