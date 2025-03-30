@@ -1,3 +1,7 @@
+-- Aleksandar Stojanovic, K12411325
+-- Annika Schmidthaler, K12411307
+-- Benedikt Zöchmann, K12410383
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 entity cra is

@@ -1,3 +1,7 @@
+-- Aleksandar Stojanovic, K12411325
+-- Annika Schmidthaler, K12411307
+-- Benedikt Zöchmann, K12410383
+
 library IEEE; use IEEE.STD_LOGIC_1164.all;
 entity adder is -- Conditional Sum Adder
   generic(width : Integer := 8);
@@ -37,7 +41,7 @@ architecture struct of adder is
   signal cout_higher_0, cout_higher_1 : std_ulogic; -- cout for higher blocks, one for cin = 1, the other for cin = 0
 
   begin
-    lower_block: cra_gen
+    lower_block: cra_gen -- CRA for lower 4 bits
       generic map (width => half)
       port map(
         a => a(half-1 downto 0),
@@ -47,7 +51,7 @@ architecture struct of adder is
         sum => sum_lower
       );
 
-    higher_block_0: cra_gen
+    higher_block_0: cra_gen -- CRA for upper 4 bits with cin = 0
       generic map (width => half)
       port map (
         a => a(width-1 downto half),
@@ -57,7 +61,7 @@ architecture struct of adder is
         sum => sum_higher_0
       );
     
-    higher_block_1: cra_gen
+    higher_block_1: cra_gen -- CRA for upper 4 bits with cin = 1
       generic map (width => half)
       port map (
         a => a(width-1 downto half),
@@ -67,16 +71,17 @@ architecture struct of adder is
         sum => sum_higher_1
       );
 
-    mux8 : MUX8_gen
+    mux8 : MUX8_gen -- 8 bit multiplexer for upper 4 bits
       generic map (width => half)
       port map(
-        a => sum_higher_1,
-        b => sum_higher_0,
-        s => not cout_lower,
+        a => sum_higher_0,
+        b => sum_higher_1,
+        s => cout_lower,
         y => s(width-1 downto half)
       );
 
     -- Directly assign lower bits to final sum
     s(half-1 downto 0) <= sum_lower;
-    s(width) <= cout_higher_1 when cout_lower = '1' else cout_higher_0;
+    -- Assign MSB of final sum
+    s(width) <= (cout_higher_1 and cout_lower) or (cout_higher_0 and not cout_lower);
   end; 
