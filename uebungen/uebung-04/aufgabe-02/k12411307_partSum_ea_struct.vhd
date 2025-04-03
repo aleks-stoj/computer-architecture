@@ -1,3 +1,7 @@
+--Aleksandar Stojanović, 12411325
+--Annika Schmidthaler, 12411307
+--Benedikt Zöchmann, 12410383
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
