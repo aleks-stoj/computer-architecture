@@ -27,8 +27,8 @@ toh: # --- CALLER CONVENTIONS ---
     addi a0, a0, -1 # n = n-1
     
     lw a1, 12(sp) # change src to spare
+	lw a2, 4(sp) # change dest to src
     lw a3, 8(sp) # change spare to dest
-    lw a3, 4(sp) # change dest to src
     jal ra, toh
     sw a0, 24(sp)
     

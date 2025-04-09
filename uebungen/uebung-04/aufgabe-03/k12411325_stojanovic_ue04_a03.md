@@ -13,8 +13,11 @@
 > ![](_img/a03.png)
 > 
 > Berechne
+> 
 >     a) den längsten komb. Pfad ($\color{red}t_{pd}$) und
->     b) den kürzesten komb. Pfad ($\color{aqua}t_{cd}$) der Schaltung
+> 
+> b) den kürzesten komb. Pfad ($\color{aqua}t_{cd}$) der Schaltung
+> 
 > und markiere diese in der Schaltung.
 > 
 > c) Ermittle den maximalen Takt mit dem das Setup Time Constraint noch eingehalten werden kann. *Hinweis: Einheiten nicht vergessen.*
@@ -24,6 +27,8 @@
 a.)
 
 ![a03a.png](_img/a03a.png)
+
+*$t_{pd}$ in rot markiert, $t_{cd}$ in blau*
 
 $t_{pd} = t_{pd - AND} + t_{pd-OR} + t_{pd-NOT} + t_{pd-OR} \\ t_{pd} = 35 \ ps + 30 \ ps + 15 \ ps + 30 \ ps = 110 \ ps $
 
