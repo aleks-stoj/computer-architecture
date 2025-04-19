@@ -103,6 +103,7 @@ architecture struct of ICS_EDU_RV32I_SC is
           funct3          : in  STD_ULOGIC_VECTOR(2 downto 0);
           funct7_5        : in  STD_ULOGIC;
           Zero            : in  STD_ULOGIC;
+          Sign            : in  STD_ULOGIC; -- input signal for sign
           ResultSrc       : out STD_ULOGIC_VECTOR(1 downto 0);
           MemWrite        : out STD_ULOGIC;
           PCSrc, ALUSrc   : out STD_ULOGIC;
@@ -120,12 +121,13 @@ architecture struct of ICS_EDU_RV32I_SC is
               ImmSrc          : in  STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1 downto 0);
               ALUControl      : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1 downto 0);
               Zero            : out STD_ULOGIC;
+              Sign            : out STD_ULOGIC; -- output signal for sign
               Instr           : out STD_ULOGIC_VECTOR(31 downto 0);
               ram_regs        : out regs_ram;
               ram_dmem        : out dmem_ram);
   end component;
     
-  signal ALUSrc, RegWrite, MemWrite, Zero, PCSrc: STD_ULOGIC;
+  signal ALUSrc, RegWrite, MemWrite, Zero, Sign, PCSrc: STD_ULOGIC; -- added signal sign
   signal Instr                                  : STD_ULOGIC_VECTOR(31 downto 0);
   signal ResultSrc                              : STD_ULOGIC_VECTOR(1 downto 0);
   signal ImmSrc                                 : STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1 downto 0);
@@ -133,7 +135,8 @@ architecture struct of ICS_EDU_RV32I_SC is
 
 begin
 
-  c: control_unit port map(Instr(6 downto 0), Instr(14 downto 12), Instr(30), Zero, ResultSrc, MemWrite, PCSrc, ALUSrc, RegWrite, ImmSrc, ALUControl);
-  dp: datapath generic map (TEXT_SEGMENT, DATA_SEGMENT, REGISTERS) port map(clk, reset, ResultSrc, PCSrc, ALUSrc, RegWrite, MemWrite, ImmSrc, ALUControl, Zero, Instr, ram_regs, ram_dmem);
+  -- add signal sign to port maps
+  c: control_unit port map(Instr(6 downto 0), Instr(14 downto 12), Instr(30), Zero, Sign, ResultSrc, MemWrite, PCSrc, ALUSrc, RegWrite, ImmSrc, ALUControl);
+  dp: datapath generic map (TEXT_SEGMENT, DATA_SEGMENT, REGISTERS) port map(clk, reset, ResultSrc, PCSrc, ALUSrc, RegWrite, MemWrite, ImmSrc, ALUControl, Zero, Sign, Instr, ram_regs, ram_dmem);
 
 end;

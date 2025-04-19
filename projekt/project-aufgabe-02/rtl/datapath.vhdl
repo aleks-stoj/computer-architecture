@@ -15,6 +15,7 @@ entity datapath is -- RISC-V datapath
             ImmSrc          : in  STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1  downto 0);
             ALUControl      : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1  downto 0);
             Zero            : out STD_ULOGIC;
+            Sign            : out STD_ULOGIC; -- output signal for sign
             Instr           : out STD_ULOGIC_VECTOR(31 downto 0);
             ram_regs        : out regs_ram;
             ram_dmem        : out dmem_ram);
@@ -65,7 +66,8 @@ architecture struct of datapath is
     port(a, b       : in  STD_ULOGIC_VECTOR(31 downto 0);
          ALUControl : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1  downto 0);
          ALUResult  : out STD_ULOGIC_VECTOR(31 downto 0);
-         Zero       : out STD_ULOGIC);
+         Zero       : out STD_ULOGIC;
+         Sign       : out STD_ULOGIC ); -- output signal for sign
   end component;
 
   component instruction_memory
@@ -85,25 +87,35 @@ architecture struct of datapath is
     
   signal PCNext, PCPlus4, PCTarget          : STD_ULOGIC_VECTOR(31 downto 0);
   signal ImmExt                             : STD_ULOGIC_VECTOR(31 downto 0);
-  signal SrcA, SrcB                         : STD_ULOGIC_VECTOR(31 downto 0);
+  signal RD1, SrcA, SrcB                    : STD_ULOGIC_VECTOR(31 downto 0);
   signal Result                             : STD_ULOGIC_VECTOR(31 downto 0);
-  signal PC, WriteData, ReadData            : STD_ULOGIC_VECTOR(31 downto 0);
+  signal PC, PCorRD1, WriteData, ReadData   : STD_ULOGIC_VECTOR(31 downto 0);
   signal ALUResult                          : STD_ULOGIC_VECTOR(31 downto 0);
+  signal auipc, jalr                              : STD_ULOGIC;
 begin
   -- next PC and extend logic
   pcreg       : d_ff    port map(clk, reset, std_logic_vector(TEXT_SEGMENT_START), PCNext, PC);
   pcadd4      : adder   port map(PC, X"00000004", PCPlus4);
-  pcaddbranch : adder   port map(PC, ImmExt, PCTarget);
-  pcmux       : mux_2   port map(PCPlus4, PCTarget, PCSrc, PCNext);
+
+    -- mux for jalr
+  jalr <= '1' when Instr(6 downto 0) = "1100111" else '0';
+  pcaddmux    : mux_2   port map(PC, RD1, jalr, PCorRD1);
+
+  pcaddbranch : adder   port map(PCorRD1, ImmExt, PCTarget);
+  pcmux       : mux_2   port map(PCPlus4, PCTarget and x"FFFFFFFE", PCSrc, PCNext); -- and x"FFFFFFFE is to ensure jump is multiple of 4
   ext         : extend  port map(Instr(31 downto 7), ImmSrc, ImmExt);
     
   -- register file and memory logic
   imem: instruction_memory  generic map (TEXT_SEGMENT) port map(reset, PC, Instr);
   dmem: data_memory         generic map (DATA_SEGMENT) port map(clk, reset, MemWrite, ALUResult, WriteData, ReadData, ram_dmem);
-  rf  : register_file       generic map (REGISTERS)    port map(clk, reset, Instr(19 downto 15), Instr(24 downto 20), Instr(11 downto 7), RegWrite, Result, SrcA, WriteData, ram_regs);
+  rf  : register_file       generic map (REGISTERS)    port map(clk, reset, Instr(19 downto 15), Instr(24 downto 20), Instr(11 downto 7), RegWrite, Result, RD1, WriteData, ram_regs); -- changed SrcA to RD1
     
   -- ALU logic
+    -- mux for auipc
+  auipc <= '1' when Instr(6 downto 0) = "0010111" else '0';
+  srcamux   :  mux_2 port map(RD1, PC, auipc, SrcA);
+
   srcbmux   :  mux_2 port map(WriteData, ImmExt, ALUSrc, SrcB);
-  mainalu   :  alu   port map(SrcA, SrcB,ALUControl, ALUResult, Zero);
+  mainalu   :  alu   port map(SrcA, SrcB, ALUControl, ALUResult, Zero, Sign); -- add signal sign to port map
   resultmux :  mux_3 port map(ALUResult, ReadData, PCPlus4, ResultSrc, Result);
 end;

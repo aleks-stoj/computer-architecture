@@ -13,20 +13,24 @@ entity main_decoder is
 end;
 
 architecture bhv of main_decoder is
-  signal controls: STD_ULOGIC_VECTOR(11 downto 0);
+  signal controls: STD_ULOGIC_VECTOR(12 downto 0); -- extend to 13 bits
 begin
   process(op) begin
     case op is
-      when "0000011" => controls <= "100100100000"; -- lw
-      when "0100011" => controls <= "001110000000"; -- sw
-      when "0110011" => controls <= "1--000001000"; -- R-type
-      when "1100011" => controls <= "010000010100"; -- beq
-      when "0010011" => controls <= "100100001000"; -- I-type ALU
-      when "1101111" => controls <= "111001000010"; -- jal
-      when "1110011" => controls <= "0--00--00001"; -- ECALL
-      when others    => controls <= "------------"; -- not valid
+      --add aupic, jalr
+      when "0000011" => controls <= "1000100100000"; -- lw
+      when "0100011" => controls <= "0001110000000"; -- sw
+      when "0110011" => controls <= "1---000001000"; -- R-type
+      when "1100011" => controls <= "0010000010100"; -- beq
+      when "0010011" => controls <= "1000100001000"; -- I-type ALU
+      when "1101111" => controls <= "1011-0100--10"; -- jal
+      when "1110011" => controls <= "0---00--00001"; -- ECALL
+      when "0010111" => controls <= "1100100000000"; -- auipc
+      when "1100111" => controls <= "1000101000010"; -- jalr
+      when others    => controls <= "-------------"; -- not valid
     end case;
   end process;
 
-  (RegWrite, ImmSrc(1), ImmSrc(0), ALUSrc, MemWrite, ResultSrc(1), ResultSrc(0), Branch, ALUOp(1), ALUOp(0), Jump, g_ecall) <= controls;
+  -- add ImmSrc(2)
+  (RegWrite, ImmSrc(2), ImmSrc(1), ImmSrc(0), ALUSrc, MemWrite, ResultSrc(1), ResultSrc(0), Branch, ALUOp(1), ALUOp(0), Jump, g_ecall) <= controls;
 end;

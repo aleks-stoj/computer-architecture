@@ -7,6 +7,7 @@ entity control_unit is -- single-cycle controller
        funct3         : in  STD_ULOGIC_VECTOR(2 downto 0);
        funct7_5       : in  STD_ULOGIC;
        Zero           : in  STD_ULOGIC;
+       Sign           : in  STD_ULOGIC; -- input signal for sign
        ResultSrc      : out STD_ULOGIC_VECTOR(1 downto 0);
        MemWrite       : out STD_ULOGIC;
        PCSrc, ALUSrc  : out STD_ULOGIC;
@@ -33,12 +34,17 @@ architecture struct of control_unit is
          ALUControl : out STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1 downto 0));
   end component;
   
-  signal ALUOp  : STD_ULOGIC_VECTOR(1 downto 0);
-  signal Branch : STD_ULOGIC;
-  signal Jump   : STD_ULOGIC;
+  signal ALUOp      : STD_ULOGIC_VECTOR(1 downto 0);
+  signal Branch     : STD_ULOGIC;
+  signal Jump       : STD_ULOGIC;
+  signal beq, bge   : STD_ULOGIC;
 begin
   md: main_decoder  port map(op, ResultSrc, MemWrite, Branch, ALUSrc, RegWrite, Jump, ImmSrc, ALUOp);
   ad: alu_decoder   port map(op(5), funct3, funct7_5, ALUOp, ALUControl);
+
+  -- Erweiterte Überprüfung wegen bge
+  beq <= '1' when funct3 = "000" else '0';
+  bge <= '1' when funct3 = "101" else '0';
   
-  PCSrc <= (Branch and Zero) or Jump;
+  PCSrc <= (Branch and ((beq and Zero) or (bge and not Sign))) or Jump;
 end;

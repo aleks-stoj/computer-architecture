@@ -7,7 +7,8 @@ entity alu is
   port(a, b       : in  STD_ULOGIC_VECTOR(31 downto 0);
        ALUControl : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1  downto 0);
        ALUResult  : out STD_ULOGIC_VECTOR(31 downto 0);
-       Zero       : out STD_ULOGIC);
+       Zero       : out STD_ULOGIC;
+       Sign       : out STD_ULOGIC ); -- output signal for sign
 end;
 
 architecture bhv of alu is
@@ -27,5 +28,5 @@ begin
   end process;
 
   Zero      <= '1' when ALUResult = X"00000000" else '0';
-  
+  Sign      <= sum(31); -- define sign as the highest bit
 end;
