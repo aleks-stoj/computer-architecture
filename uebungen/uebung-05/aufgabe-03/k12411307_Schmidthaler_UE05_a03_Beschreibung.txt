@@ -1,0 +1,35 @@
+# Aleksandar Stojanović, 12411325
+# Annika Schmidthaler, 12411307
+# Benedikt Zöchmann, 12410383
+
+Beschreibung des Codes
+
+
+Am Anfang werden folgende Werte initialisiert:
+a0, a1 zeigen auf die float Array data0 und data1
+a2 = 6 (Schleife soll 6 mal durchlaufen)
+t0 = 0 (Schleifenvariable fängt bei 0 an)
+ft3 = 2.0 (integer 2 zu float konvertiert)
+ft0 = π
+
+
+Bei jedem Durchlauf der Schleife wird die Fläche eines Kreises mit Radius = Schleifenvariable an der i-ten Stelle in das erste Floatarray gespeichert.
+Der Umfang des Kreises mit Radius = Schleifenvariable wird an der i-ten Stelle in das zweite Floatarray gespeichert.
+
+Am Ende hat data0 also die Flächen Werte [0.0, π, 4π, 9π, 16π, 25π] bzw.
+data0:
+  data0[0] = 0.000000
+  data0[1] = 3.141593
+  data0[2] = 12.566371
+  data0[3] = 28.274334
+  data0[4] = 50.265484
+  data0[5] = 78.539818
+
+Und data1 die Umfangwerte [0.0, 2π, 4π, 6π, 8π, 10π] bzw.
+data1:
+  data1[0] = 0.000000
+  data1[1] = 6.283185
+  data1[2] = 12.566371
+  data1[3] = 18.849556
+  data1[4] = 25.132742
+  data1[5] = 31.415926
