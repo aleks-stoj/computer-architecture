@@ -63,13 +63,13 @@ Da jede Instruction im Single Cycle Prozessor in einem Taktzyklus ausgeführt wi
 
 **Instruktionslänge `lw` beim Multi Cycle Prozessor:**
 
-$t_{MCP-lw} = t_{fetch} + t_{decode} + t_{memAdr} + t_{memRead} + t_{memWB} = 375 \ ps + 225 \ ps + 335 \ ps + 360 \ ps + 145 \ ps = 1140 \ ps $
+$t_{MCP-lw} = t_{fetch} + t_{decode} + t_{memAdr} + t_{memRead} + t_{memWB} = 375 \ ps + 225 \ ps + 335 \ ps + 360 \ ps + 145 \ ps = 1440 \ ps $
 
 **Maximale Frequenzen berechnen:**
 
     **Single Cycle Prozessor:**
 
-    $f_{SCP} = \frac{1}{t_{lw}} = 1.063 \ GHz$
+    $f_{SCP} = \frac{1}{t_{SCP-lw}} = 1.063 \ GHz$
 
     **Multi Cycle Prozessor:**
 
