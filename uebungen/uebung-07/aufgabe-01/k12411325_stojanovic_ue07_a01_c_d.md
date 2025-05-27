@@ -11,7 +11,7 @@
 ## Teammitglieder
 
 - Aleksandar Stojanović, K12411325
-- Annika Schmidtthaler, K12411307
+- Annika Schmidthaler, K12411307
 - Benedikt Zöchmann, K12410383
 
 ---
@@ -32,12 +32,15 @@
 > 
 > c) Behebe alle Pipeline-Konflikte durch Einfügen der minimalen Anzahl an NOP-Befehlen.
 > 
-> 
 > d) Minimiere die Anzahl der NOP-Befehle durch Umordnen der Befehle (ohne die Semantik des Programms zu verändern). Nimm dabei an, dass der Prozessor auch das Löschen (flushen) von Pipeline-Registern unterstützt.
+
+*Notiz: Wenn man sich die Immediate Werte ansschaut, kann der Fall "Nicht Springen" nicht vorkommen, da die Bedingung von `beq` immer true ist. Vollständigkeitshalber (und um mit der in der Übung gezeigten Methode übereinzustimmen) wird trotzdessen dieser Fall hier berücksichtigt.*
+
+*Moodlepost zur Notwendigkeit der zwei Fälle: [2025S366009/21/25/26/27 | JKU Moodle](https://moodle.jku.at/mod/forum/discuss.php?d=148034#p293614)*
 
 c.)
 
-**Augangsposition**
+**Ausgangsposition**
 
 |     | Fetch | Decode | Execute | Memory | Writeback |
 | --- | ----- | ------ | ------- | ------ | --------- |
@@ -67,17 +70,20 @@ c.)
 | 8           | nop   | and    | add     | nop    | nop       |
 | 9           | nop   | nop    | and     | add    | nop       |
 | 10          | nop   | nop    | nop     | and    | add       |
-| 11          | nop   | nop    | nop     | nop    | and       |
-| 12          | beq   | nop    | nop     | nop    | nop       |
-| 13          | nop   | beq    | nop     | nop    | nop       |
-| 14          | nop   | nop    | beq     | nop    | nop       |
-| 15          | addi  | nop    | nop     | beq    | nop       |
-| 16          |       | addi   | nop     | nop    | beq       |
-| 17          |       |        | addi    | nop    | nop       |
-| 18          |       |        |         | addi   | nop       |
-| 19          |       |        |         |        | addi      |
+| 11          | beq   | nop    | nop     | nop    | and       |
+| 12          | nop   | beq    | nop     | nop    | nop       |
+| 13          | nop   | nop    | beq     | nop    | nop       |
+| 14          | addi  | nop    | nop     | beq    | nop       |
+| 15          | nop   | addi   | nop     | nop    | beq       |
+| 16          | nop   | nop    | addi    | nop    | nop       |
+| 17          | nop   | nop    | nop     | addi   | nop       |
+| 18          | add   | nop    | nop     | nop    | addi      |
+| 19          |       | add    | nop     | nop    | nop       |
+| 20          |       |        | add     | nop    | nop       |
+| 21          |       |        |         | add    | nop       |
+| 22          |       |        |         |        | add       |
 
-**Man benötigt 9 NOPs**
+**Man benötigt 11 NOPs**
 
 | Sprung | Fetch | Decode | Execute | Memory | Writeback |
 | ------ | ----- | ------ | ------- | ------ | --------- |
@@ -91,17 +97,16 @@ c.)
 | 8      | nop   | and    | add     | nop    | nop       |
 | 9      | nop   | nop    | and     | add    | nop       |
 | 10     | nop   | nop    | nop     | and    | add       |
-| 11     | nop   | nop    | nop     | nop    | and       |
-| 12     | beq   | nop    | nop     | nop    | nop       |
-| 13     | nop   | beq    | nop     | nop    | nop       |
-| 14     | nop   | nop    | beq     | nop    | nop       |
-| 15     | add   | nop    | nop     | beq    | nop       |
-| 16     |       | add    | nop     | nop    | beq       |
-| 17     |       |        | add     | nop    | nop       |
-| 18     |       |        |         | add    | nop       |
-| 19     |       |        |         |        | add       |
+| 11     | beq   | nop    | nop     | nop    | and       |
+| 12     | nop   | beq    | nop     | nop    | nop       |
+| 13     | nop   | nop    | beq     | nop    | nop       |
+| 14     | add   | nop    | nop     | beq    | nop       |
+| 15     |       | add    | nop     | nop    | beq       |
+| 16     |       |        | add     | nop    | nop       |
+| 17     |       |        |         | add    | nop       |
+| 18     |       |        |         |        | add       |
 
-**Man benötigt 9 NOPs**
+**Man benötigt 8 NOPs**
 
 d.)
 
@@ -146,13 +151,18 @@ skip:
 | 9           | nop   | nop    | add     | and    | nop       |
 | 10          | beq   | nop    | nop     | add    | and       |
 | 11          | nop   | beq    | nop     | nop    | add       |
-| 12          | addi  | nop    | beq     | nop    | nop       |
-| 13          |       | addi   | nop     | beq    | nop       |
-| 14          |       |        | addi    | nop    | beq       |
-| 15          |       |        |         | addi   | nop       |
-| 16          |       |        |         |        | addi      |
+| 12          | nop   | nop    | beq     | nop    | nop       |
+| 13          | addi  | nop    | nop     | beq    | nop       |
+| 14          | nop   | addi   | nop     | nop    | beq       |
+| 15          | nop   | nop    | nop     | addi   | nop       |
+| 16          | nop   | nop    | nop     | nop    | addi      |
+| 17          | add   | nop    | nop     | nop    | nop       |
+| 18          |       | add    | nop     | nop    | nop       |
+| 19          |       |        | add     | nop    | nop       |
+| 20          |       |        |         | add    | nop       |
+| 21          |       |        |         |        |           |
 
-Durch die Umordnung können wir die benötigten NOPs auf 6 reduzieren.
+Durch die Umordnung können wir die benötigten NOPs auf 10 reduzieren.
 
 | Sprung | Fetch | Decode | Execute | Memory | Writeback |
 | ------ | ----- | ------ | ------- | ------ | --------- |
