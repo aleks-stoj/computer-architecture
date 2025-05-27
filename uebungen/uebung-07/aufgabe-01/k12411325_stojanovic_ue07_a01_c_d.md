@@ -53,31 +53,49 @@ c.)
 
 **Einfügen von NOPs:**
 
-|     | Fetch | Decode | Execute | Memory | Writeback |
-| --- | ----- | ------ | ------- | ------ | --------- |
-| 1   | addi  |        |         |        |           |
-| 2   | addi  | addi   |         |        |           |
-| 3   | nop   | addi   | addi    |        |           |
-| 4   | nop   | nop    | addi    | addi   |           |
-| 5   | nop   | nop    | nop     | addi   | addi      |
-| 6   | add   | nop    | nop     | nop    | addi      |
-| 7   | nop   | add    | nop     | nop    | nop       |
-| 8   | and   | nop    | add     | nop    | nop       |
-| 9   | nop   | and    | nop     | add    | nop       |
-| 10  | nop   | nop    | and     | nop    | add       |
-| 11  | nop   | nop    | nop     | and    | nop       |
-| 12  | nop   | nop    | nop     | nop    | and       |
-| 13  | beq   | nop    | nop     | nop    | nop       |
-| 14  | nop   | beq    | nop     | nop    | nop       |
-| 15  | addi  | nop    | beq     | nop    | nop       |
-| 16  | nop   | addi   | nop     | beq    | nop       |
-| 17  | add   | nop    | addi    | nop    | beq       |
-| 18  |       | add    | nop     | addi   | nop       |
-| 19  |       |        | add     | nop    | addi      |
-| 20  |       |        |         | add    | nop       |
-| 21  |       |        |         |        | add       |
+| kein Sprung | Fetch | Decode | Execute | Memory | Writeback |
+| ----------- | ----- | ------ | ------- | ------ | --------- |
+| 1           | addi  |        |         |        |           |
+| 2           | addi  | addi   |         |        |           |
+| 3           | nop   | addi   | addi    |        |           |
+| 4           | nop   | nop    | addi    | addi   |           |
+| 5           | nop   | nop    | nop     | addi   | addi      |
+| 6           | add   | nop    | nop     | nop    | addi      |
+| 7           | and   | add    | nop     | nop    | nop       |
+| 8           | nop   | and    | add     | nop    | nop       |
+| 9           | nop   | nop    | and     | add    | nop       |
+| 10          | beq   | nop    | nop     | and    | add       |
+| 11          | nop   | beq    | nop     | nop    | and       |
+| 12          | nop   | nop    | beq     | nop    | nop       |
+| 13          | addi  | nop    | nop     | beq    | nop       |
+| 14          |       | addi   | nop     | nop    | beq       |
+| 15          |       |        | addi    | nop    | nop       |
+| 16          |       |        |         | addi   | nop       |
+| 17          |       |        |         |        | addi      |
 
-**Es braucht 10 NOPs**
+**Man benötigt 7 NOPs**
+
+| Sprung | Fetch | Decode | Execute | Memory | Writeback |
+| ------ | ----- | ------ | ------- | ------ | --------- |
+| 1      | addi  |        |         |        |           |
+| 2      | addi  | addi   |         |        |           |
+| 3      | nop   | addi   | addi    |        |           |
+| 4      | nop   | nop    | addi    | addi   |           |
+| 5      | nop   | nop    | nop     | addi   | addi      |
+| 6      | add   | nop    | nop     | nop    | addi      |
+| 7      | and   | add    | nop     | nop    | nop       |
+| 8      | nop   | and    | add     | nop    | nop       |
+| 9      | nop   | nop    | and     | add    | nop       |
+| 10     | beq   | nop    | nop     | and    | add       |
+| 11     | nop   | beq    | nop     | nop    | and       |
+| 12     | nop   | nop    | beq     | nop    | nop       |
+| 13     | add   | nop    | nop     | beq    | nop       |
+| 14     |       | add    | nop     | nop    | beq       |
+| 15     |       |        | add     | nop    | nop       |
+| 16     |       |        |         | add    | nop       |
+| 17     |       |        |         |        | add       |
+
+**Man benötigt 7 NOPs**
 
 d.)
 
@@ -101,30 +119,57 @@ skip:
 main:
     addi t0, zero, 10
     addi t1, zero, 20
-    addi t3, zero, 1
-    add t2, t0, t1
     and t0, t1, t0
+    add t2, t0, t1
     beq t0, zero, skip
+    addi t3, zero, 1
 skip:
     add t3, t2, t3
 ```
 
-|     | Fetch | Decode | Execute | Memory | Writeback |
-| --- | ----- | ------ | ------- | ------ | --------- |
-| 1   | addi  |        |         |        |           |
-| 2   | addi  | addi   |         |        |           |
-| 3   | addi  | addi   | addi    |        |           |
-| 4   | nop   | addi   | addi    | addi   |           |
-| 5   | add   | nop    | addi    | addi   | addi      |
-| 6   | nop   | add    | nop     | addi   | addi      |
-| 7   | beq   | nop    | add     | nop    | addi      |
-| 8   | nop   | beq    | nop     | add    | nop       |
-| 9   | add   | nop    | beq     | nop    | add       |
-| 10  |       | add    | nop     | beq    | nop       |
-| 11  |       |        | add     | nop    | beq       |
-| 12  |       |        |         | add    | nop       |
-| 13  |       |        |         |        | add       |
+| kein Sprung | Fetch | Decode | Execute | Memory | Writeback |
+| ----------- | ----- | ------ | ------- | ------ | --------- |
+| 1           | addi  |        |         |        |           |
+| 2           | addi  | addi   |         |        |           |
+| 3           | nop   | addi   | addi    |        |           |
+| 4           | nop   | nop    | addi    | addi   |           |
+| 5           | nop   | nop    | nop     | addi   | addi      |
+| 6           | and   | nop    | nop     | nop    | addi      |
+| 7           | add   | and    | nop     | nop    | nop       |
+| 8           | nop   | add    | and     | nop    | nop       |
+| 9           | nop   | nop    | add     | and    | nop       |
+| 10          | nop   | nop    | nop     | add    | and       |
+| 11          | beq   | nop    | nop     | nop    | add       |
+| 12          | nop   | beq    | nop     | nop    | nop       |
+| 13          | addi  | nop    | beq     | nop    | nop       |
+| 14          |       | addi   | nop     | beq    | nop       |
+| 15          |       |        | addi    | nop    | beq       |
+| 16          |       |        |         | addi   | nop       |
+| 17          |       |        |         |        | addi      |
 
-Durch die Umordnung konnten wir die benötigten NOPs auf 3 reduzieren.
+Durch die Umordnung können wir die benötigten NOPs auf 7 reduzieren.
+
+| Sprung | Fetch | Decode | Execute | Memory | Writeback |
+| ------ | ----- | ------ | ------- | ------ | --------- |
+| 1      | addi  |        |         |        |           |
+| 2      | addi  | addi   |         |        |           |
+| 3      | nop   | addi   | addi    |        |           |
+| 4      | nop   | nop    | addi    | addi   |           |
+| 5      | nop   | nop    | nop     | addi   | addi      |
+| 6      | and   | nop    | nop     | nop    | addi      |
+| 7      | add   | and    | nop     | nop    | nop       |
+| 8      | nop   | add    | and     | nop    | nop       |
+| 9      | nop   | nop    | add     | and    | nop       |
+| 10     | nop   | nop    | nop     | add    | and       |
+| 11     | beq   | nop    | nop     | nop    | add       |
+| 12     | nop   | beq    | nop     | nop    | nop       |
+| 13     | nop   | nop    | beq     | nop    | nop       |
+| 14     | add   | nop    | nop     | beq    | nop       |
+| 15     |       | add    | nop     | nop    | beq       |
+| 16     |       |        | add     | nop    | nop       |
+| 17     |       |        |         | add    | nop       |
+| 18     |       |        |         |        | add       |
+
+Durch die Umordnung können wir die benötigten NOPs auf 8 reduzieren.
 
 ---
