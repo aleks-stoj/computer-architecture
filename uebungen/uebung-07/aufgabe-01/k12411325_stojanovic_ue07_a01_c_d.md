@@ -31,6 +31,8 @@
 > ```
 > 
 > c) Behebe alle Pipeline-Konflikte durch Einfügen der minimalen Anzahl an NOP-Befehlen.
+> 
+> 
 > d) Minimiere die Anzahl der NOP-Befehle durch Umordnen der Befehle (ohne die Semantik des Programms zu verändern). Nimm dabei an, dass der Prozessor auch das Löschen (flushen) von Pipeline-Registern unterstützt.
 
 c.)
@@ -64,16 +66,18 @@ c.)
 | 7           | and   | add    | nop     | nop    | nop       |
 | 8           | nop   | and    | add     | nop    | nop       |
 | 9           | nop   | nop    | and     | add    | nop       |
-| 10          | beq   | nop    | nop     | and    | add       |
-| 11          | nop   | beq    | nop     | nop    | and       |
-| 12          | nop   | nop    | beq     | nop    | nop       |
-| 13          | addi  | nop    | nop     | beq    | nop       |
-| 14          |       | addi   | nop     | nop    | beq       |
-| 15          |       |        | addi    | nop    | nop       |
-| 16          |       |        |         | addi   | nop       |
-| 17          |       |        |         |        | addi      |
+| 10          | nop   | nop    | nop     | and    | add       |
+| 11          | nop   | nop    | nop     | nop    | and       |
+| 12          | beq   | nop    | nop     | nop    | nop       |
+| 13          | nop   | beq    | nop     | nop    | nop       |
+| 14          | nop   | nop    | beq     | nop    | nop       |
+| 15          | addi  | nop    | nop     | beq    | nop       |
+| 16          |       | addi   | nop     | nop    | beq       |
+| 17          |       |        | addi    | nop    | nop       |
+| 18          |       |        |         | addi   | nop       |
+| 19          |       |        |         |        | addi      |
 
-**Man benötigt 7 NOPs**
+**Man benötigt 9 NOPs**
 
 | Sprung | Fetch | Decode | Execute | Memory | Writeback |
 | ------ | ----- | ------ | ------- | ------ | --------- |
@@ -86,16 +90,18 @@ c.)
 | 7      | and   | add    | nop     | nop    | nop       |
 | 8      | nop   | and    | add     | nop    | nop       |
 | 9      | nop   | nop    | and     | add    | nop       |
-| 10     | beq   | nop    | nop     | and    | add       |
-| 11     | nop   | beq    | nop     | nop    | and       |
-| 12     | nop   | nop    | beq     | nop    | nop       |
-| 13     | add   | nop    | nop     | beq    | nop       |
-| 14     |       | add    | nop     | nop    | beq       |
-| 15     |       |        | add     | nop    | nop       |
-| 16     |       |        |         | add    | nop       |
-| 17     |       |        |         |        | add       |
+| 10     | nop   | nop    | nop     | and    | add       |
+| 11     | nop   | nop    | nop     | nop    | and       |
+| 12     | beq   | nop    | nop     | nop    | nop       |
+| 13     | nop   | beq    | nop     | nop    | nop       |
+| 14     | nop   | nop    | beq     | nop    | nop       |
+| 15     | add   | nop    | nop     | beq    | nop       |
+| 16     |       | add    | nop     | nop    | beq       |
+| 17     |       |        | add     | nop    | nop       |
+| 18     |       |        |         | add    | nop       |
+| 19     |       |        |         |        | add       |
 
-**Man benötigt 7 NOPs**
+**Man benötigt 9 NOPs**
 
 d.)
 
@@ -138,16 +144,15 @@ skip:
 | 7           | add   | and    | nop     | nop    | nop       |
 | 8           | nop   | add    | and     | nop    | nop       |
 | 9           | nop   | nop    | add     | and    | nop       |
-| 10          | nop   | nop    | nop     | add    | and       |
-| 11          | beq   | nop    | nop     | nop    | add       |
-| 12          | nop   | beq    | nop     | nop    | nop       |
-| 13          | addi  | nop    | beq     | nop    | nop       |
-| 14          |       | addi   | nop     | beq    | nop       |
-| 15          |       |        | addi    | nop    | beq       |
-| 16          |       |        |         | addi   | nop       |
-| 17          |       |        |         |        | addi      |
+| 10          | beq   | nop    | nop     | add    | and       |
+| 11          | nop   | beq    | nop     | nop    | add       |
+| 12          | addi  | nop    | beq     | nop    | nop       |
+| 13          |       | addi   | nop     | beq    | nop       |
+| 14          |       |        | addi    | nop    | beq       |
+| 15          |       |        |         | addi   | nop       |
+| 16          |       |        |         |        | addi      |
 
-Durch die Umordnung können wir die benötigten NOPs auf 7 reduzieren.
+Durch die Umordnung können wir die benötigten NOPs auf 6 reduzieren.
 
 | Sprung | Fetch | Decode | Execute | Memory | Writeback |
 | ------ | ----- | ------ | ------- | ------ | --------- |
@@ -160,16 +165,15 @@ Durch die Umordnung können wir die benötigten NOPs auf 7 reduzieren.
 | 7      | add   | and    | nop     | nop    | nop       |
 | 8      | nop   | add    | and     | nop    | nop       |
 | 9      | nop   | nop    | add     | and    | nop       |
-| 10     | nop   | nop    | nop     | add    | and       |
-| 11     | beq   | nop    | nop     | nop    | add       |
-| 12     | nop   | beq    | nop     | nop    | nop       |
-| 13     | nop   | nop    | beq     | nop    | nop       |
-| 14     | add   | nop    | nop     | beq    | nop       |
-| 15     |       | add    | nop     | nop    | beq       |
-| 16     |       |        | add     | nop    | nop       |
-| 17     |       |        |         | add    | nop       |
-| 18     |       |        |         |        | add       |
+| 10     | beq   | nop    | nop     | add    | and       |
+| 11     | nop   | beq    | nop     | nop    | add       |
+| 12     | nop   | nop    | beq     | nop    | nop       |
+| 13     | add   | nop    | nop     | beq    | nop       |
+| 14     |       | add    | nop     | nop    | beq       |
+| 15     |       |        | add     | nop    | nop       |
+| 16     |       |        |         | add    | nop       |
+| 17     |       |        |         |        | add       |
 
-Durch die Umordnung können wir die benötigten NOPs auf 8 reduzieren.
+Durch die Umordnung können wir die benötigten NOPs auf 7 reduzieren.
 
 ---
