@@ -127,6 +127,22 @@ skip:
 **Abgeänderte Form unter Berücksichtigung der Abhängigkeiten:**
 
 ```
+# Kein Sprung
+main:
+    addi t0, zero, 10
+    addi t1, zero, 20
+    addi t3, zero, 1
+    and t0, t1, t0
+    add t2, t0, t1
+    beq t0, zero, skip
+skip:
+    add t3, t2, t3
+```
+
+*Anmerkung: Eigentlich dürfte man nicht `addi t3, t2, t3` vorschieben, da wie schon gesagt der Pfad "Nicht Springen" mit den gegebenen Werte nicht auftreten kann. Da wir aber schon zw. den Szenarien "Springen" und "Nicht Springen" unterscheiden, ist es in diesem Fall zulässig.*
+
+```
+# Sprung
 main:
     addi t0, zero, 10
     addi t1, zero, 20
@@ -142,27 +158,22 @@ skip:
 | ----------- | ----- | ------ | ------- | ------ | --------- |
 | 1           | addi  |        |         |        |           |
 | 2           | addi  | addi   |         |        |           |
-| 3           | nop   | addi   | addi    |        |           |
-| 4           | nop   | nop    | addi    | addi   |           |
-| 5           | nop   | nop    | nop     | addi   | addi      |
-| 6           | and   | nop    | nop     | nop    | addi      |
-| 7           | add   | and    | nop     | nop    | nop       |
+| 3           | addi  | addi   | addi    |        |           |
+| 4           | nop   | addi   | addi    | addi   |           |
+| 5           | nop   | nop    | addi    | addi   |           |
+| 6           | and   | nop    | nop     | addi   | addi      |
+| 7           | add   | and    | nop     | nop    | addi      |
 | 8           | nop   | add    | and     | nop    | nop       |
 | 9           | nop   | nop    | add     | and    | nop       |
 | 10          | beq   | nop    | nop     | add    | and       |
 | 11          | nop   | beq    | nop     | nop    | add       |
 | 12          | nop   | nop    | beq     | nop    | nop       |
-| 13          | addi  | nop    | nop     | beq    | nop       |
-| 14          | nop   | addi   | nop     | nop    | beq       |
-| 15          | nop   | nop    | nop     | addi   | nop       |
-| 16          | nop   | nop    | nop     | nop    | addi      |
-| 17          | add   | nop    | nop     | nop    | nop       |
-| 18          |       | add    | nop     | nop    | nop       |
-| 19          |       |        | add     | nop    | nop       |
-| 20          |       |        |         | add    | nop       |
-| 21          |       |        |         |        |           |
+| 13          | add   | nop    | nop     | beq    | nop       |
+| 14          |       | add    | nop     | nop    | beq       |
+| 15          |       |        | add     | nop    | nop       |
+| 16          |       |        |         | add    | nop       |
 
-Durch die Umordnung können wir die benötigten NOPs auf 10 reduzieren.
+Durch die Umordnung können wir die benötigten NOPs auf 6 reduzieren.
 
 | Sprung | Fetch | Decode | Execute | Memory | Writeback |
 | ------ | ----- | ------ | ------- | ------ | --------- |
