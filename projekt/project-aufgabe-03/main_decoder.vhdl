@@ -24,7 +24,7 @@ begin
       when "0010011" => controls <= "100100001000"; -- I-type ALU
       when "1101111" => controls <= "111001000010"; -- jal
       when "1110011" => controls <= "0--00--00001"; -- ECALL
-      when "0001011" => controls <= "1--000001000"; -- CUSTOM INSTRUCTION
+      when "0001011" => controls <= "1--000001100"; -- CUSTOM INSTRUCTION
       when others    => controls <= "------------"; -- not valid
     end case;
   end process;
