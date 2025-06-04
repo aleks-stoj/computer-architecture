@@ -9,9 +9,11 @@ use work.pkg_riscv_sc.all;
 entity register_file is -- three-port register file
   generic ( REGISTERS : string);
   port    ( clk, reset: in  STD_ULOGIC;
-            A1, A2, A3: in  STD_ULOGIC_VECTOR(4  downto 0);
+            A1, A2, A3, A4: in  STD_ULOGIC_VECTOR(4  downto 0); -- A4 for custom instruction
             WE3       : in  STD_ULOGIC;
             WD3       : in  STD_ULOGIC_VECTOR(31 downto 0);
+            WD4       : in  STD_ULOGIC_VECTOR(31 downto 0); -- Write Data for custom instruction
+            WE4       : in  STD_ULOGIC; -- Write Enable for custom instruction               
             RD1, RD2  : out STD_ULOGIC_VECTOR(31 downto 0);
             ram_regs  : out regs_ram);
 end;
@@ -43,6 +45,8 @@ begin
     else
       if rising_edge(clk) then
         if WE3='1' then ram_regs(to_integer(unsigned(A3))) <= WD3;
+        end if;
+        if WE4='1' then ram_regs(to_integer(unsigned(A4))) <= WD4; -- write into rd2
         end if;
       end if;
     end if;

@@ -32,8 +32,8 @@ begin
         end case;
       when "11" => -- custom instruction
         case funct3 is
-          when "000" => ALUControl <= ALU_CTRL_CUSTOM;
-          when others => ALUControl <= ALU_CTRL_UKNWN;
+          when "000" => ALUControl <= ALU_CTRL_CUSTOM; -- if func3 = 100, then its custom instruction
+          when others => ALUControl <= ALU_CTRL_UKNWN; -- else unknown instruction
         end case;
       when others => 
         ALUControl <= ALU_CTRL_UKNWN; -- unknown

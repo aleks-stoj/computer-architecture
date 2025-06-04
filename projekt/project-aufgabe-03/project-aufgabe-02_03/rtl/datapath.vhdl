@@ -10,7 +10,7 @@ entity datapath is -- RISC-V datapath
   port    ( clk, reset      : in  STD_ULOGIC; 
             ResultSrc       : in  STD_ULOGIC_VECTOR(1  downto 0);
             PCSrc, ALUSrc   : in  STD_ULOGIC;
-            RegWrite        : in  STD_ULOGIC;
+            RegWrite        : in  STD_ULOGIC_VECTOR(1 downto 0); -- increase to 2 bits to check if Write Enable for rd2 is enabled
             MemWrite        : in  STD_ULOGIC;
             ImmSrc          : in  STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1  downto 0);
             ALUControl      : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1  downto 0);
@@ -49,9 +49,11 @@ architecture struct of datapath is
   component register_file
     generic ( REGISTERS : string);
     port    ( clk, reset: in  STD_ULOGIC;
-              A1, A2, A3: in  STD_ULOGIC_VECTOR(4  downto 0);
+              A1, A2, A3, A4: in  STD_ULOGIC_VECTOR(4  downto 0); -- A4 is the address of the second output
               WE3       : in  STD_ULOGIC;
               WD3       : in  STD_ULOGIC_VECTOR(31 downto 0);
+              WD4       : in  STD_ULOGIC_VECTOR(31 downto 0); -- Write Data for custom instruction
+              WE4       : in  STD_ULOGIC; -- Write Enable for custom instruction  
               RD1, RD2  : out STD_ULOGIC_VECTOR(31 downto 0);
               ram_regs  : out regs_ram);
   end component;
@@ -67,6 +69,7 @@ architecture struct of datapath is
          ALUControl : in  STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1  downto 0);
          ALUResult  : out STD_ULOGIC_VECTOR(31 downto 0);
          ALUResult2  : out STD_ULOGIC_VECTOR(31 downto 0); -- add ALUResult2 for other (larger) number
+         f2          : in STD_ULOGIC_VECTOR(1 downto 0); -- f2 to select where the numbers should be sorted
          Zero       : out STD_ULOGIC;
          Sign       : out STD_ULOGIC ); -- output signal for sign
   end component;
@@ -88,12 +91,12 @@ architecture struct of datapath is
     
   signal PCNext, PCPlus4, PCTarget          : STD_ULOGIC_VECTOR(31 downto 0);
   signal ImmExt                             : STD_ULOGIC_VECTOR(31 downto 0);
-  signal RD1, SrcA, SrcB                    : STD_ULOGIC_VECTOR(31 downto 0);
+  signal RD1, RD2, SrcA, SrcB               : STD_ULOGIC_VECTOR(31 downto 0);
   signal Result                             : STD_ULOGIC_VECTOR(31 downto 0);
   signal PC, PCorRD1, WriteData, ReadData   : STD_ULOGIC_VECTOR(31 downto 0);
   signal ALUResult                          : STD_ULOGIC_VECTOR(31 downto 0);
-  signal ALUResult2                         : STD_ULOGIC_VECTOR(31 downto 0); -- ALUResult2
-  signal auipc, jalr                              : STD_ULOGIC;
+  signal ALUResult2                         : STD_ULOGIC_VECTOR(31 downto 0); -- Second ALU Result for second register (custom instruction)
+  signal auipc, jalr                        : STD_ULOGIC;
 begin
   -- next PC and extend logic
   pcreg       : d_ff    port map(clk, reset, std_logic_vector(TEXT_SEGMENT_START), PCNext, PC);
@@ -110,14 +113,12 @@ begin
   -- register file and memory logic
   imem: instruction_memory  generic map (TEXT_SEGMENT) port map(reset, PC, Instr);
   dmem: data_memory         generic map (DATA_SEGMENT) port map(clk, reset, MemWrite, ALUResult, WriteData, ReadData, ram_dmem);
-  rf  : register_file       generic map (REGISTERS)    port map(clk, reset, Instr(19 downto 15), Instr(24 downto 20), Instr(11 downto 7), RegWrite, Result, RD1, WriteData, ram_regs); -- changed SrcA to RD1
-    
-  -- ALU logic
-    -- mux for auipc
+  rf  : register_file       generic map (REGISTERS)    port map(clk, reset, Instr(19 downto 15), Instr(24 downto 20), Instr(11 downto 7), Instr(29 downto 25), RegWrite(0) , Result, ALUResult2, RegWrite(1), RD1, WriteData, ram_regs); -- changed SrcA to RD1
+                                                            --  clk, reset,         A1(rs1),            A2(rs2),                A3(rd1),           A4(rd2),       WE3,        WD3,      WD4,         WE4       
   auipc <= '1' when Instr(6 downto 0) = "0010111" else '0';
   srcamux   :  mux_2 port map(RD1, PC, auipc, SrcA);
 
   srcbmux   :  mux_2 port map(WriteData, ImmExt, ALUSrc, SrcB);
-  mainalu   :  alu   port map(SrcA, SrcB, ALUControl, ALUResult, ALUResult2, Zero, Sign); -- add signal sign to port map and ALUResult2
+  mainalu   :  alu   port map(SrcA, SrcB, ALUControl, ALUResult, ALUResult2, Instr(31 downto 30), Zero, Sign); -- add signal sign to port map and ALUResult2, f2
   resultmux :  mux_3 port map(ALUResult, ReadData, PCPlus4, ResultSrc, Result);
 end;

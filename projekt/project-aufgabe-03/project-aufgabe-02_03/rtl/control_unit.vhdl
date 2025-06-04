@@ -11,7 +11,7 @@ entity control_unit is -- single-cycle controller
        ResultSrc      : out STD_ULOGIC_VECTOR(1 downto 0);
        MemWrite       : out STD_ULOGIC;
        PCSrc, ALUSrc  : out STD_ULOGIC;
-       RegWrite       : out STD_ULOGIC;
+       RegWrite       : out STD_ULOGIC_VECTOR(1 downto 0);
        ImmSrc         : out STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1 downto 0);
        ALUControl     : out STD_ULOGIC_VECTOR(ALU_CTRL_SIZE-1 downto 0));
 end;
@@ -22,7 +22,8 @@ architecture struct of control_unit is
          ResultSrc      : out STD_ULOGIC_VECTOR(1 downto 0);
          MemWrite       : out STD_ULOGIC;
          Branch, ALUSrc : out STD_ULOGIC;
-         RegWrite, Jump : out STD_ULOGIC;
+         RegWrite       : out STD_ULOGIC_VECTOR(1 downto 0);
+         Jump           : out STD_ULOGIC;
          ImmSrc         : out STD_ULOGIC_VECTOR(IMM_SRC_SIZE-1 downto 0);
          ALUOp          : out STD_ULOGIC_VECTOR(1 downto 0));
   end component;

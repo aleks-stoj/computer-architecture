@@ -32,3 +32,4 @@ fd9ff06f
 00440413
 fc5ff06f
 00008067
+// Anmerkung: Instructions in Zeile 27-29 sollte nach Berechnung eigentlich mit 4e7e038b ersetzt werden, jedoch führt das zu einem Timeout und verhindert die Abgabe des Projektes in EPICS
