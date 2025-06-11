@@ -74,21 +74,21 @@ $MIPS_{P_{1}} = \frac{I_c}{T_{exe}^{SC} \cdot 10^6} = 1000$
 
 **CPI-Wert:**
 
-$Cycles = 4 + I_c + \frac{I_c \cdot 0.27}{7} + 0.23 \cdot 0.41 \cdot 2 + 0.23 \cdot 2 = 2077142862$
+$Cycles = 4 + I_c + \frac{I_c \cdot 0.27}{7} + I_c \cdot 0.23 \cdot 0.41 \cdot 2 + I_c \cdot 0.23 \cdot 2 = 3374342861$
 
-$CPI_{P_2} = \frac{Cycles}{I_c} = 1.038571431$
+$CPI_{P_2} = \frac{Cycles}{I_c} = 1.687171431$
 
 **Ausführungszeit:**
 
-$CPI_{P_2} = 1.038571431$
+$CPI_{P_2} = 1.687171431$
 
-$T_{P_3} = \frac{1}{2 \ GHz} = 0.5 \ ns$
+$T_{P_2} = \frac{1}{2 \ GHz} = 0.5 \ ns$
 
-$T_{exe}^{PL} = I_c \cdot CPI_{P_2} \cdot T_{P_3} = 1.038571431 \ s$
+$T_{exe}^{PL} = I_c \cdot CPI_{P_2} \cdot T_{P_2} = 1.687171431 \ s$
 
 **MIPS-Wert:**
 
-$MIPS_{P_2} = \frac{I_c}{T_{exe}^{PL} \cdot 10^6} = 1925.722141$
+$MIPS_{P_2} = \frac{I_c}{T_{exe}^{PL} \cdot 10^6} = 1185.415995$
 
 ### Multicycle Prozessor
 
